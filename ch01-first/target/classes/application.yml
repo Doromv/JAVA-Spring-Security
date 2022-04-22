@@ -1,6 +1,0 @@
-spring:
-  security:
-    user:
-      name: Doromv
-      password: 123456
-
