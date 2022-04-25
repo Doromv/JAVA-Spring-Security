@@ -14,7 +14,9 @@ import java.util.List;
  * @create 2022-04-23-9:10
  */
 @SpringBootTest
-public class UserMapperTest {
+public class MapperTest {
+    @Autowired
+    MenuMapper menuMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -27,7 +29,7 @@ public class UserMapperTest {
         }
     }
     @Test
-    public void TestPasswordEncoder(){
+    public void testPasswordEncoder(){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         //$2a$10$3SnPojcGQc3dkdhfJCwaS.xbZ6vPOHJlCnr.RfX55PooMaI6PvVEa
         //$2a$10$WKez1YY6koNH7AqnuIq/m.uCJPuI6NzoZhWgfony7AnthtjLxB3Qq
@@ -36,5 +38,12 @@ public class UserMapperTest {
 //        String str2 = bCryptPasswordEncoder.encode("123456");
 //        System.out.println(str1);
 //        System.out.println(str2);
+    }
+    @Test
+    public void testSelectPermsByUserId(){
+        List<String> list = menuMapper.selectPermsByUserId(1L);
+        for (String s : list) {
+            System.out.println(s);
+        }
     }
 }

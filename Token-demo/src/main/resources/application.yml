@@ -4,3 +4,7 @@ spring:
     username: root
     password: QAQm..02r
     driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis-plus:
+  mapper-locations: /mapper/MenuMapper.xml
+server:
+  port: 8888

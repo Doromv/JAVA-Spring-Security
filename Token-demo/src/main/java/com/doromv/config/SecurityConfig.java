@@ -1,6 +1,8 @@
 package com.doromv.config;
 
 import com.doromv.filter.JwtAuthenticationTokenFilter;
+import com.doromv.handler.AccessDeniedHandlerImpl;
+import com.doromv.handler.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
+    AuthenticationEntryPointImpl authenticationEntryPoint;
+    @Autowired
+    AccessDeniedHandlerImpl accessDeniedHandler;
+    @Autowired
     JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -39,9 +45,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // 对于登录接口 允许匿名访问
                 .antMatchers("/user/login").anonymous()
+                //给test接口配置权限认证
+                .antMatchers("/test").hasAuthority("system:dept:list")
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
-        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        //添加过滤器
+        http
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        //配置异常处理器
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler);
+        //允许跨域
+        http
+                .cors();
+
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.doromv.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.doromv.mapper.MenuMapper;
 import com.doromv.mapper.UserMapper;
 import com.doromv.pojo.LoginUser;
 import com.doromv.pojo.User;
@@ -10,12 +11,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Doromv
  * @create 2022-04-23-9:25
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+    @Autowired
+    MenuMapper menuMapper;
     @Autowired
     private UserMapper userMapper;
     @Override
@@ -27,8 +34,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if(result==null){
             throw new RuntimeException("用户名或者密码错误");
         }
-        // TODO 查询对应的权限信息
+        //查询对应的权限信息
+        List<String> list = menuMapper.selectPermsByUserId(result.getId());
         //把数据封装成UserDetails返回
-        return new LoginUser(result);
+        return new LoginUser(result,list);
     }
 }
